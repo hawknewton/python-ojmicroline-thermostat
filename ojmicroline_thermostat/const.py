@@ -16,11 +16,11 @@ WD5_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 WG4_DATETIME_FORMAT = "%d/%m/%Y %H:%M:%S %z"
 COMFORT_DURATION = 240
 
-UWG5_SENSOR_MAP: dict[str, int] = {
+WG5_SENSOR_MAP: dict[str, int] = {
     "Floor": SENSOR_FLOOR,
     "Room": SENSOR_ROOM,
     "RoomFloor": SENSOR_ROOM_FLOOR,
 }
 
-UWG5_MODE_SCHEDULE = 1
-UWG5_MODE_HOLD = 2
+WG5_MODE_SCHEDULE = 1
+WG5_MODE_HOLD = 2

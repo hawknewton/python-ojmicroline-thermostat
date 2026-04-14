@@ -1,6 +1,6 @@
 # pylint: disable=protected-access
-# mypy: disable-error-code=attr-defined
-"""Integration test for the UWG5API class."""
+# mypy: disable-error-code="attr-defined,arg-type"
+"""Integration test for the WG5API class."""
 
 import json
 
@@ -12,8 +12,8 @@ from ojmicroline_thermostat import (
     OJMicrolineAuthError,
     Thermostat,
 )
-from ojmicroline_thermostat.const import REGULATION_FROST_PROTECTION, REGULATION_MANUAL
-from ojmicroline_thermostat.uwg5 import UWG5API
+from ojmicroline_thermostat.const import REGULATION_MANUAL
+from ojmicroline_thermostat.wg5 import WG5API
 
 from . import load_fixtures
 
@@ -28,11 +28,11 @@ async def test_login(aresponses: ResponsesMockServer) -> None:
         Response(
             status=200,
             headers={"Content-Type": "application/json"},
-            text=load_fixtures("uwg5_token.json"),
+            text=load_fixtures("wg5_token.json"),
         ),
     )
     async with aiohttp.ClientSession() as session:
-        api = UWG5API(
+        api = WG5API(
             username="py",
             password="test",
             host="ojmicroline.test.host",
@@ -59,7 +59,7 @@ async def test_login_failed(aresponses: ResponsesMockServer) -> None:
         ),
     )
     async with aiohttp.ClientSession() as session:
-        api = UWG5API(
+        api = WG5API(
             username="py",
             password="test",
             host="ojmicroline.test.host",
@@ -80,14 +80,14 @@ def _add_login_response(aresponses: ResponsesMockServer) -> None:
         Response(
             status=200,
             headers={"Content-Type": "application/json"},
-            text=load_fixtures("uwg5_token.json"),
+            text=load_fixtures("wg5_token.json"),
         ),
     )
 
 
-def _make_api() -> UWG5API:
-    """Create a UWG5API for tests."""
-    return UWG5API(
+def _make_api() -> WG5API:
+    """Create a WG5API for tests."""
+    return WG5API(
         username="py",
         password="test",
         host="ojmicroline.test.host",
@@ -106,7 +106,7 @@ async def test_get_thermostats(aresponses: ResponsesMockServer) -> None:
         Response(
             status=200,
             headers={"Content-Type": "application/json"},
-            text=load_fixtures("uwg5_buildings.json"),
+            text=load_fixtures("wg5_buildings.json"),
         ),
     )
     aresponses.add(
@@ -126,7 +126,7 @@ async def test_get_thermostats(aresponses: ResponsesMockServer) -> None:
         Response(
             status=200,
             headers={"Content-Type": "application/json"},
-            text=load_fixtures("uwg5_building_tree.json"),
+            text=load_fixtures("wg5_building_tree.json"),
         ),
     )
     aresponses.add(
@@ -136,7 +136,7 @@ async def test_get_thermostats(aresponses: ResponsesMockServer) -> None:
         Response(
             status=200,
             headers={"Content-Type": "application/json"},
-            text=load_fixtures("uwg5_thermostat_control.json"),
+            text=load_fixtures("wg5_thermostat_control.json"),
         ),
     )
     aresponses.add(
@@ -146,7 +146,7 @@ async def test_get_thermostats(aresponses: ResponsesMockServer) -> None:
         Response(
             status=200,
             headers={"Content-Type": "application/json"},
-            text=load_fixtures("uwg5_thermostat_detail.json"),
+            text=load_fixtures("wg5_thermostat_detail.json"),
         ),
     )
     aresponses.add(
@@ -156,7 +156,7 @@ async def test_get_thermostats(aresponses: ResponsesMockServer) -> None:
         Response(
             status=200,
             headers={"Content-Type": "application/json"},
-            text=load_fixtures("uwg5_schedule.json"),
+            text=load_fixtures("wg5_schedule.json"),
         ),
     )
     async with aiohttp.ClientSession() as session:
@@ -168,7 +168,7 @@ async def test_get_thermostats(aresponses: ResponsesMockServer) -> None:
         assert len(thermostats) == 1
         thermostat = thermostats[0]
         assert thermostat.name == "Bathroom"
-        assert thermostat.model == "UWG5"
+        assert thermostat.model == "WG5"
         assert thermostat.serial_number == "2cb3e6c5-8cf8-4e7e-943a-42618c34a506"
         assert thermostat.online is True
         assert thermostat.heating is True
@@ -187,7 +187,7 @@ async def test_get_thermostats(aresponses: ResponsesMockServer) -> None:
 
 @pytest.mark.asyncio
 async def test_get_energy_usage(aresponses: ResponsesMockServer) -> None:
-    """Test fetching energy usage for a UWG5 thermostat."""
+    """Test fetching energy usage for a WG5 thermostat."""
     _add_login_response(aresponses)
     aresponses.add(
         "ojmicroline.test.host",
@@ -196,15 +196,15 @@ async def test_get_energy_usage(aresponses: ResponsesMockServer) -> None:
         Response(
             status=200,
             headers={"Content-Type": "application/json"},
-            text=load_fixtures("uwg5_energy.json"),
+            text=load_fixtures("wg5_energy.json"),
         ),
     )
     async with aiohttp.ClientSession() as session:
         api = _make_api()
         client = OJMicroline(api=api, session=session)
 
-        data = json.loads(load_fixtures("uwg5_thermostat_control.json"))
-        thermostat = Thermostat.from_uwg5_json(
+        data = json.loads(load_fixtures("wg5_thermostat_control.json"))
+        thermostat = Thermostat.from_wg5_json(
             data["data"],
             building_id="57dc7778-4ed3-4382-9e89-5cf2e0bc0f8a",
             zone_name="Default",

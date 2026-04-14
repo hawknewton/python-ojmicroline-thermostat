@@ -21,8 +21,8 @@ from ojmicroline_thermostat.const import (
     SENSOR_FLOOR,
     SENSOR_ROOM,
     SENSOR_ROOM_FLOOR,
-    UWG5_SENSOR_MAP,
     WG4_DATETIME_FORMAT,
+    WG5_SENSOR_MAP,
 )
 
 from .schedule import Schedule
@@ -67,11 +67,11 @@ class Thermostat:
     boost_temperature: int | None = None
     energy: list[float] | None = None
 
-    # WG4/UWG5 fields:
+    # WG4/WG5 fields:
     temperature: int | None = None
     set_point_temperature: int | None = None
 
-    # UWG5-only fields:
+    # WG5-only fields:
     building_id: str | None = None
     zone_uuid: str | None = None
     is_in_standby: bool | None = None
@@ -187,7 +187,7 @@ class Thermostat:
         )
 
     @classmethod
-    def from_uwg5_json(
+    def from_wg5_json(
         cls,
         data: dict[str, Any],
         building_id: str,
@@ -195,7 +195,7 @@ class Thermostat:
         *,
         away_active: bool = False,
     ) -> Thermostat:
-        """Return a new Thermostat instance based on JSON from the UWG5-series API.
+        """Return a new Thermostat instance based on JSON from the WG5-series API.
 
         Args:
         ----
@@ -222,7 +222,7 @@ class Thermostat:
             regulation_mode = REGULATION_MANUAL
 
         return cls(
-            model="UWG5",
+            model="WG5",
             serial_number=data["id"],
             software_version="",
             zone_name=zone_name,
@@ -251,7 +251,7 @@ class Thermostat:
             frost_protection_temperature=round(
                 data["frostProtectionTemperature"] * 100
             ),
-            sensor_mode=UWG5_SENSOR_MAP.get(data.get("sensorApplication", "")),
+            sensor_mode=WG5_SENSOR_MAP.get(data.get("sensorApplication", "")),
             open_window_detection=data.get("isOpenWindowDetected", False),
             vacation_mode=away_active or mode.get("isAwayActive", False),
             is_in_standby=mode["isInStandby"],

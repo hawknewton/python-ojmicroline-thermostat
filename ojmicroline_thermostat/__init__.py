@@ -9,14 +9,14 @@ from .exceptions import (
 )
 from .models import Thermostat
 from .ojmicroline import OJMicroline
-from .uwg5 import UWG5API
 from .wd5 import WD5API
 from .wg4 import WG4API
+from .wg5 import WG5API
 
 __all__ = [
-    "UWG5API",
     "WD5API",
     "WG4API",
+    "WG5API",
     "OJMicroline",
     "OJMicrolineAuthError",
     "OJMicrolineConnectionError",

@@ -208,23 +208,23 @@ async def test_thermostat_from_json_wd5_timezone_negative() -> None:
 
 
 @pytest.mark.asyncio
-async def test_thermostat_from_json_uwg5() -> None:
-    """Make sure the data is accepted by the from_uwg5_json method."""
-    data = json.loads(load_fixtures("uwg5_thermostat_control.json"))
-    thermostat = Thermostat.from_uwg5_json(
+async def test_thermostat_from_json_wg5() -> None:
+    """Make sure the data is accepted by the from_wg5_json method."""
+    data = json.loads(load_fixtures("wg5_thermostat_control.json"))
+    thermostat = Thermostat.from_wg5_json(
         data["data"],
         building_id="57dc7778-4ed3-4382-9e89-5cf2e0bc0f8a",
         zone_name="Default",
     )
 
-    for field in UWG5_ONLY_FIELDS:
+    for field in WG5_ONLY_FIELDS:
         assert getattr(thermostat, field) is not None, (
             f"Expected {field} to be non-null"
         )
     for field in WD5_EXCLUSIVE_FIELDS:
         assert getattr(thermostat, field) is None, f"Expected {field} to be null"
 
-    assert thermostat.model == "UWG5"
+    assert thermostat.model == "WG5"
     assert thermostat.serial_number == "2cb3e6c5-8cf8-4e7e-943a-42618c34a506"
     assert thermostat.software_version == ""
     assert thermostat.zone_name == "Default"
@@ -262,12 +262,12 @@ async def test_thermostat_from_json_uwg5() -> None:
 
 
 @pytest.mark.asyncio
-async def test_thermostat_from_json_uwg5_standby() -> None:
+async def test_thermostat_from_json_wg5_standby() -> None:
     """Make sure standby mode maps to REGULATION_FROST_PROTECTION."""
-    data = json.loads(load_fixtures("uwg5_thermostat_control.json"))
+    data = json.loads(load_fixtures("wg5_thermostat_control.json"))
     data["data"]["mode"]["isInStandby"] = True
 
-    thermostat = Thermostat.from_uwg5_json(
+    thermostat = Thermostat.from_wg5_json(
         data["data"],
         building_id="57dc7778-4ed3-4382-9e89-5cf2e0bc0f8a",
         zone_name="Default",
@@ -278,11 +278,11 @@ async def test_thermostat_from_json_uwg5_standby() -> None:
 
 
 @pytest.mark.asyncio
-async def test_thermostat_from_json_uwg5_away() -> None:
+async def test_thermostat_from_json_wg5_away() -> None:
     """Make sure away_active maps to REGULATION_VACATION."""
-    data = json.loads(load_fixtures("uwg5_thermostat_control.json"))
+    data = json.loads(load_fixtures("wg5_thermostat_control.json"))
 
-    thermostat = Thermostat.from_uwg5_json(
+    thermostat = Thermostat.from_wg5_json(
         data["data"],
         building_id="57dc7778-4ed3-4382-9e89-5cf2e0bc0f8a",
         zone_name="Default",
@@ -294,12 +294,12 @@ async def test_thermostat_from_json_uwg5_away() -> None:
 
 
 @pytest.mark.asyncio
-async def test_thermostat_from_json_uwg5_schedule() -> None:
+async def test_thermostat_from_json_wg5_schedule() -> None:
     """Make sure fallbackMode Auto maps to REGULATION_SCHEDULE."""
-    data = json.loads(load_fixtures("uwg5_thermostat_control.json"))
+    data = json.loads(load_fixtures("wg5_thermostat_control.json"))
     data["data"]["mode"]["fallbackMode"] = "Auto"
 
-    thermostat = Thermostat.from_uwg5_json(
+    thermostat = Thermostat.from_wg5_json(
         data["data"],
         building_id="57dc7778-4ed3-4382-9e89-5cf2e0bc0f8a",
         zone_name="Default",
@@ -363,7 +363,7 @@ WD5_EXCLUSIVE_FIELDS = [
     "boost_temperature",
 ]
 
-UWG5_ONLY_FIELDS = [
+WG5_ONLY_FIELDS = [
     "building_id",
     "zone_uuid",
     "is_in_standby",
