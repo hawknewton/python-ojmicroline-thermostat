@@ -1,5 +1,5 @@
 # pylint: disable=protected-access
-# mypy: disable-error-code="attr-defined,arg-type"
+# mypy: disable-error-code="attr-defined"
 """Test the WG5API update regulation mode methods."""
 
 import json

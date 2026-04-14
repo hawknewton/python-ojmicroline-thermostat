@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any
 
@@ -31,20 +30,36 @@ WG5_SCOPES = (
 )
 
 
-@dataclass
 class WG5API:
     """Controls OJ Microline WG5-series thermostats."""
 
-    username: str
-    password: str
-    host: str = "user-api.ojmicroline.com"
-    identity_host: str = "identity.ojmicroline.com"
+    request: RequestFunc
     client_id: str = "mobile_app_client"
 
-    request: RequestFunc = field(default=None, repr=False)  # type: ignore[assignment]
-    _access_token: str | None = field(default=None, repr=False)
-    _refresh_token: str | None = field(default=None, repr=False)
-    _token_expiry: datetime | None = field(default=None, repr=False)
+    def __init__(
+        self,
+        username: str,
+        password: str,
+        host: str = "user-api.ojmicroline.com",
+        identity_host: str = "identity.ojmicroline.com",
+    ) -> None:
+        """Create a new instance of the API object.
+
+        Args:
+        ----
+            username: The username to log in with.
+            password: The password for the username.
+            host: The host name used for API requests.
+            identity_host: The host name used for OAuth2 authentication.
+
+        """
+        self.username = username
+        self.password = password
+        self.host = host
+        self.identity_host = identity_host
+        self._access_token: str | None = None
+        self._refresh_token: str | None = None
+        self._token_expiry: datetime | None = None
 
     async def login(self) -> None:
         """Authenticate via OAuth2 Resource Owner Password Credentials grant.
